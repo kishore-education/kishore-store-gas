@@ -20,12 +20,12 @@ export const CheckoutModal = () => {
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    fullName: userProfile.fullName || 'Kishore Kumar',
-    email: 'kishore@example.com',
-    phone: userProfile.phone || '+91 98765 43210',
-    street: userProfile.address || 'Door No 45, Main Road, Sector 4',
-    city: 'Chennai',
-    zip: '600001',
+    fullName: userProfile?.fullName || '',
+    email: '',
+    phone: userProfile?.phone || '',
+    street: userProfile?.address || '',
+    city: '',
+    zip: '',
     paymentMethod: 'cod'
   });
 

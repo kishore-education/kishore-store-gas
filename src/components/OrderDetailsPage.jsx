@@ -14,7 +14,7 @@ export const OrderDetailsPage = () => {
   if (!lastOrder?.product) return null;
 
   const product = lastOrder.product;
-  const orderId = lastOrder.orderId || 'KSG-882194';
+  const orderId = lastOrder.orderId || '';
   const orderDate = lastOrder.date || new Date().toISOString().split('T')[0];
   const totalPrice = product.price * (lastOrder.quantity || 1);
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { X, User, Phone, MapPin, Hash, Save, CheckCircle, Navigation, Loader2 } from 'lucide-react';
 import { getAbsolutePinpointLocation } from '../services/locationService';
@@ -8,6 +8,12 @@ export const UserProfileModal = () => {
 
   const [form, setForm] = useState(userProfile);
   const [isLocating, setIsLocating] = useState(false);
+
+  useEffect(() => {
+    if (userProfile) {
+      setForm(userProfile);
+    }
+  }, [userProfile, isProfileModalOpen]);
 
   if (!isProfileModalOpen) return null;
 

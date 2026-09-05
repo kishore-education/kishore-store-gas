@@ -5,19 +5,13 @@ import { getGasDetailsFromGist } from '../services/gistService';
 const ShopContext = createContext();
 
 const DEFAULT_PROFILE = {
-  fullName: 'Kishore Kumar',
-  phone: '+91 98765 43210',
-  address: 'Door No 45, Main Road, Sector 4',
-  consumerId: 'KSG-984210'
+  fullName: '',
+  phone: '',
+  address: '',
+  consumerId: ''
 };
 
-const DEFAULT_LAST_ORDER = {
-  product: PRODUCTS[0], // TOTAL 12KG
-  quantity: 1,
-  paymentMethod: 'cod',
-  date: '2026-08-28',
-  orderId: 'KSG-882194'
-};
+const DEFAULT_LAST_ORDER = null;
 
 // Telegram Bot Order Notification Function
 const sendTelegramNotification = async (orderData, profileData) => {
@@ -71,7 +65,7 @@ export const ShopProvider = ({ children }) => {
   const [products, setProducts] = useState(PRODUCTS);
   const [isGistLoading, setIsGistLoading] = useState(false);
   const [gistError, setGistError] = useState(null);
-  const [wishlist, setWishlist] = useState(['1', '3']);
+  const [wishlist, setWishlist] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 

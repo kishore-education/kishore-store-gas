@@ -3,13 +3,13 @@ import { useShop } from '../context/ShopContext';
 import { Flame, X, Check, Truck, ShieldAlert, Clock, MapPin, Phone, Hash } from 'lucide-react';
 
 export const GasBookingSection = () => {
-  const { isGasModalOpen, setIsGasModalOpen, addToCart, products, setIsCartOpen } = useShop();
+  const { isGasModalOpen, setIsGasModalOpen, addToCart, products, setIsCartOpen, userProfile } = useShop();
 
   const gasProducts = products.filter(p => p.category === 'gas');
   const [selectedProduct, setSelectedProduct] = useState(gasProducts[0] || null);
-  const [consumerId, setConsumerId] = useState('KSG-984210');
-  const [phone, setPhone] = useState('+1 (555) 234-5678');
-  const [address, setAddress] = useState('742 Evergreen Terrace, Sector 4');
+  const [consumerId, setConsumerId] = useState(userProfile?.consumerId || '');
+  const [phone, setPhone] = useState(userProfile?.phone || '');
+  const [address, setAddress] = useState(userProfile?.address || '');
   const [deliverySlot, setDeliverySlot] = useState('express');
   const [quantity, setQuantity] = useState(1);
 
