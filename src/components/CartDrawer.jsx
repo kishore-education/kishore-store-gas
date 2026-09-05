@@ -103,13 +103,6 @@ export const CartDrawer = () => {
 
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-bold text-slate-100 truncate">{item.title}</h4>
-                    
-                    {/* Gas Option Badge if present */}
-                    {item.options?.consumerId && (
-                      <span className="text-[10px] text-amber-400 block truncate">
-                        LPG ID: {item.options.consumerId}
-                      </span>
-                    )}
 
                     <div className="mt-1 flex items-baseline space-x-2">
                       <span className="text-sm font-extrabold text-amber-400">

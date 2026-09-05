@@ -50,9 +50,42 @@ export const UserProfileModal = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    saveUserProfile(form);
+
+    let currentForm = { ...form };
+
+    // Compulsory GPS Geolocation Enforcement
+    if (!currentForm.latitude || !currentForm.longitude) {
+      showToast('GPS Geolocation is compulsory! Auto-detecting location...', 'info');
+      try {
+        setIsLocating(true);
+        const loc = await getAbsolutePinpointLocation({
+          onProgress: (acc) => showToast(`Tracking GPS... Accuracy: ±${acc}m`, 'info'),
+          targetAccuracyMeters: 15,
+          maxWaitMs: 8000
+        });
+
+        currentForm = {
+          ...currentForm,
+          address: currentForm.address || loc.address,
+          mapsUrl: loc.mapsUrl,
+          gpsCoords: loc.gpsCoords,
+          latitude: loc.lat,
+          longitude: loc.lng
+        };
+        setForm(currentForm);
+        showToast('GPS Geolocation captured successfully!', 'success');
+      } catch (err) {
+        showToast('GPS Geolocation is compulsory! Please allow location permissions.', 'error');
+        setIsLocating(false);
+        return; // Block form submission
+      } finally {
+        setIsLocating(false);
+      }
+    }
+
+    saveUserProfile(currentForm);
     setIsProfileModalOpen(false);
   };
 
@@ -155,17 +188,6 @@ export const UserProfileModal = () => {
               placeholder="e.g. 80.2707"
             />
           </div>
-
-          <ModernInput
-            label="LPG Connection / Consumer ID"
-            icon={Hash}
-            required
-            value={form.consumerId}
-            onChange={(e) => setForm({ ...form, consumerId: e.target.value })}
-            onClear={() => setForm({ ...form, consumerId: '' })}
-            placeholder="e.g. KSG-984210"
-            enterKeyHint="done"
-          />
 
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 text-xs text-amber-200 flex items-start space-x-2">
             <CheckCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />

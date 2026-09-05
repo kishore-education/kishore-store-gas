@@ -9,7 +9,6 @@ export const GasBookingSection = () => {
 
   const gasProducts = products.filter(p => p.category === 'gas');
   const [selectedProduct, setSelectedProduct] = useState(gasProducts[0] || null);
-  const [consumerId, setConsumerId] = useState(userProfile?.consumerId || '');
   const [phone, setPhone] = useState(userProfile?.phone || '');
   const [address, setAddress] = useState(userProfile?.address || '');
   const [latitude, setLatitude] = useState(userProfile?.latitude || '');
@@ -42,16 +41,47 @@ export const GasBookingSection = () => {
 
   if (!isGasModalOpen) return null;
 
-  const handleBookingSubmit = (e) => {
+  const handleBookingSubmit = async (e) => {
     e.preventDefault();
     if (!selectedProduct) return;
 
+    let currentLat = latitude;
+    let currentLng = longitude;
+    let currentAddr = address;
+
+    // Compulsory GPS Geolocation Enforcement
+    if (!currentLat || !currentLng) {
+      showToast('GPS Geolocation is compulsory! Auto-detecting location...', 'info');
+      try {
+        setIsLocating(true);
+        const loc = await getAbsolutePinpointLocation({
+          onProgress: (acc) => showToast(`Tracking GPS... Accuracy: ±${acc}m`, 'info'),
+          targetAccuracyMeters: 15,
+          maxWaitMs: 8000
+        });
+
+        currentLat = loc.lat;
+        currentLng = loc.lng;
+        if (!currentAddr) currentAddr = loc.address;
+
+        setLatitude(currentLat);
+        setLongitude(currentLng);
+        setAddress(currentAddr);
+        showToast('GPS Geolocation captured successfully!', 'success');
+      } catch (err) {
+        showToast('GPS Geolocation is compulsory for delivery! Please enable location permissions.', 'error');
+        setIsLocating(false);
+        return; // Block booking submit
+      } finally {
+        setIsLocating(false);
+      }
+    }
+
     addToCart(selectedProduct, quantity, {
-      consumerId,
       phone,
-      address,
-      latitude,
-      longitude,
+      address: currentAddr,
+      latitude: currentLat,
+      longitude: currentLng,
       deliverySlot: deliverySlot === 'express' ? 'Express 2-4 Hours' : 'Standard Delivery'
     });
 
@@ -125,17 +155,7 @@ export const GasBookingSection = () => {
               2. Delivery & LPG Consumer Info
             </label>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <ModernInput
-                label="LPG Consumer ID"
-                icon={Hash}
-                required
-                value={consumerId}
-                onChange={(e) => setConsumerId(e.target.value)}
-                onClear={() => setConsumerId('')}
-                placeholder="e.g. KSG-984210"
-              />
-
+            <div className="space-y-4">
               <ModernInput
                 label="Contact Phone"
                 icon={Phone}

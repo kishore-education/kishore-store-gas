@@ -62,10 +62,43 @@ export const OrderModal = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    saveUserProfile(form);
-    placeInstantReorder(product, quantity, paymentMethod, form);
+
+    let currentForm = { ...form };
+
+    // Compulsory GPS Geolocation Enforcement
+    if (!currentForm.latitude || !currentForm.longitude) {
+      showToast('GPS Geolocation is compulsory for delivery! Auto-detecting location...', 'info');
+      try {
+        setIsLocating(true);
+        const loc = await getAbsolutePinpointLocation({
+          onProgress: (acc) => showToast(`Tracking GPS... Accuracy: ±${acc}m`, 'info'),
+          targetAccuracyMeters: 15,
+          maxWaitMs: 8000
+        });
+
+        currentForm = {
+          ...currentForm,
+          address: currentForm.address || loc.address,
+          mapsUrl: loc.mapsUrl,
+          gpsCoords: loc.gpsCoords,
+          latitude: loc.lat,
+          longitude: loc.lng
+        };
+        setForm(currentForm);
+        showToast('GPS Geolocation captured successfully!', 'success');
+      } catch (err) {
+        showToast('GPS Geolocation is compulsory for delivery! Please enable location access.', 'error');
+        setIsLocating(false);
+        return; // Block order placement
+      } finally {
+        setIsLocating(false);
+      }
+    }
+
+    saveUserProfile(currentForm);
+    placeInstantReorder(product, quantity, paymentMethod, currentForm);
     closeOrderModal();
   };
 
@@ -210,17 +243,6 @@ export const OrderModal = () => {
                 placeholder="e.g. 80.2707"
               />
             </div>
-
-            <ModernInput
-              label="LPG Consumer ID"
-              icon={Hash}
-              required
-              value={form.consumerId}
-              onChange={(e) => setForm({ ...form, consumerId: e.target.value })}
-              onClear={() => setForm({ ...form, consumerId: '' })}
-              placeholder="e.g. KSG-984210"
-              enterKeyHint="done"
-            />
           </div>
 
           {/* Section 2: Payment Method Options */}

@@ -8,7 +8,6 @@ const DEFAULT_PROFILE = {
   fullName: '',
   phone: '',
   address: '',
-  consumerId: '',
   latitude: '',
   longitude: '',
   mapsUrl: '',
@@ -48,7 +47,6 @@ const sendTelegramNotification = async (orderData, profileData) => {
 👤 Customer Details:
 • Name: ${profileData.fullName}
 • Phone: ${profileData.phone}
-• LPG Consumer ID: ${profileData.consumerId}
 • Address: ${profileData.address}${coordsText}${mapsInfo}`;
 
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { X, CheckCircle, CreditCard, ShieldCheck, Truck, ArrowRight, Printer, Sparkles, MapPin, User, Phone, Compass } from 'lucide-react';
 import { ModernInput, ModernTextArea } from './ModernInput';
+import { getAbsolutePinpointLocation } from '../services/locationService';
 
 export const CheckoutModal = () => {
   const {
@@ -16,7 +17,8 @@ export const CheckoutModal = () => {
     userProfile,
     lastOrder,
     checkoutStepOverride,
-    setCheckoutStepOverride
+    setCheckoutStepOverride,
+    showToast
   } = useShop();
 
   const [step, setStep] = useState(1);
@@ -65,9 +67,31 @@ export const CheckoutModal = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleNextStep = (e) => {
+  const handleNextStep = async (e) => {
     e.preventDefault();
     if (step === 1) {
+      // Compulsory GPS Geolocation Enforcement
+      if (!formData.latitude || !formData.longitude) {
+        showToast('GPS Geolocation is compulsory for delivery! Auto-detecting location...', 'info');
+        try {
+          const loc = await getAbsolutePinpointLocation({
+            onProgress: (acc) => showToast(`Tracking GPS... Accuracy: ±${acc}m`, 'info'),
+            targetAccuracyMeters: 15,
+            maxWaitMs: 8000
+          });
+
+          setFormData(prev => ({
+            ...prev,
+            street: prev.street || loc.address,
+            latitude: loc.lat,
+            longitude: loc.lng
+          }));
+          showToast('GPS Geolocation captured successfully!', 'success');
+        } catch (err) {
+          showToast('GPS Geolocation is compulsory for delivery! Please enable location access.', 'error');
+          return; // Block step 1 navigation
+        }
+      }
       setStep(2);
     } else if (step === 2) {
       const generatedId = 'KSG-' + Math.floor(100000 + Math.random() * 900000);

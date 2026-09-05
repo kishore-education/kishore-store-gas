@@ -133,14 +133,7 @@ export const OrderDetailsPage = () => {
               <div className="text-slate-100 font-bold">{userProfile.phone || 'N/A'}</div>
             </div>
 
-            <div className="space-y-1">
-              <span className="text-slate-500 font-medium flex items-center">
-                <Hash className="w-3.5 h-3.5 mr-1 text-amber-400" /> LPG Connection Consumer ID
-              </span>
-              <div className="text-slate-100 font-bold">{userProfile.consumerId || 'N/A'}</div>
-            </div>
-
-            <div className="space-y-1">
+            <div className="space-y-1 sm:col-span-2">
               <span className="text-slate-500 font-medium flex items-center">
                 <MapPin className="w-3.5 h-3.5 mr-1 text-amber-400" /> Complete Delivery Address
               </span>
