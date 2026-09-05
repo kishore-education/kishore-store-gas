@@ -26,7 +26,7 @@ export const Navbar = () => {
           <img 
             src="/logo.png" 
             alt="Kishore Gas Logo" 
-            className="w-10 h-10 object-contain rounded-xl border border-amber-500/30 shadow-lg shadow-amber-500/10 group-hover:scale-105 transition-transform" 
+            className="w-10 h-10 object-contain rounded-xl bg-black p-0.5 border border-amber-500/40 shadow-lg shadow-amber-500/10 group-hover:scale-105 transition-transform" 
           />
           <div className="flex flex-col">
             <span className="text-lg font-black text-white tracking-tight leading-none">
