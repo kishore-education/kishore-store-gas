@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
-import { X, CheckCircle, CreditCard, ShieldCheck, Truck, ArrowRight, Printer, Sparkles, MapPin } from 'lucide-react';
+import { X, CheckCircle, CreditCard, ShieldCheck, Truck, ArrowRight, Printer, Sparkles, MapPin, User, Phone, Compass } from 'lucide-react';
+import { ModernInput, ModernTextArea } from './ModernInput';
 
 export const CheckoutModal = () => {
   const {
@@ -132,39 +133,60 @@ export const CheckoutModal = () => {
           {step === 1 && (
             <form onSubmit={handleNextStep} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1">Contact Phone</label>
-                  <input
-                    type="text"
-                    required
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-                  />
-                </div>
+                <ModernInput
+                  label="Full Name"
+                  icon={User}
+                  required
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onClear={() => setFormData({ ...formData, fullName: '' })}
+                  placeholder="Full name"
+                  autoComplete="name"
+                  enterKeyHint="next"
+                />
+                <ModernInput
+                  label="Contact Phone"
+                  icon={Phone}
+                  required
+                  type="tel"
+                  inputMode="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onClear={() => setFormData({ ...formData, phone: '' })}
+                  placeholder="Mobile number"
+                  autoComplete="tel"
+                  enterKeyHint="next"
+                />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-400 mb-1">Delivery Address</label>
-                <textarea
-                  required
-                  rows={2}
-                  name="street"
-                  value={formData.street}
-                  onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500 resize-none"
+              <ModernTextArea
+                label="Delivery Address"
+                icon={MapPin}
+                required
+                rows={2}
+                value={formData.street}
+                onChange={(e) => setFormData({ ...formData, street: e.target.value })}
+                placeholder="Door number, street name, area"
+              />
+
+              <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80">
+                <ModernInput
+                  label="Latitude"
+                  icon={Compass}
+                  inputMode="decimal"
+                  value={formData.latitude}
+                  onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                  onClear={() => setFormData({ ...formData, latitude: '' })}
+                  placeholder="e.g. 13.0827"
+                />
+                <ModernInput
+                  label="Longitude"
+                  icon={Compass}
+                  inputMode="decimal"
+                  value={formData.longitude}
+                  onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                  onClear={() => setFormData({ ...formData, longitude: '' })}
+                  placeholder="e.g. 80.2707"
                 />
               </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
 import { Flame, X, Check, Truck, ShieldAlert, Clock, MapPin, Phone, Hash, Navigation, Loader2, Compass } from 'lucide-react';
 import { getAbsolutePinpointLocation } from '../services/locationService';
+import { ModernInput, ModernTextArea } from './ModernInput';
 
 export const GasBookingSection = () => {
   const { isGasModalOpen, setIsGasModalOpen, addToCart, products, setIsCartOpen, userProfile, showToast } = useShop();
@@ -125,41 +126,38 @@ export const GasBookingSection = () => {
             </label>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs text-slate-400 mb-1 flex items-center">
-                  <Hash className="w-3.5 h-3.5 mr-1 text-amber-500" /> LPG Consumer ID
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={consumerId}
-                  onChange={(e) => setConsumerId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-                  placeholder="e.g. KSG-984210"
-                />
-              </div>
+              <ModernInput
+                label="LPG Consumer ID"
+                icon={Hash}
+                required
+                value={consumerId}
+                onChange={(e) => setConsumerId(e.target.value)}
+                onClear={() => setConsumerId('')}
+                placeholder="e.g. KSG-984210"
+              />
 
-              <div>
-                <label className="block text-xs text-slate-400 mb-1 flex items-center">
-                  <Phone className="w-3.5 h-3.5 mr-1 text-amber-500" /> Contact Phone
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-                  placeholder="e.g. +1 555 0192"
-                />
-              </div>
+              <ModernInput
+                label="Contact Phone"
+                icon={Phone}
+                required
+                type="tel"
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                onClear={() => setPhone('')}
+                placeholder="Contact number"
+              />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs text-slate-400 flex items-center">
-                  <MapPin className="w-3.5 h-3.5 mr-1 text-amber-500" /> Home / Business Address
-                </label>
-
+            <ModernTextArea
+              label="Home / Business Address"
+              icon={MapPin}
+              required
+              rows={2}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Enter complete street address and apartment number"
+              rightElement={
                 <button
                   type="button"
                   onClick={handleDetectGPS}
@@ -171,46 +169,31 @@ export const GasBookingSection = () => {
                   ) : (
                     <Navigation className="w-3.5 h-3.5" />
                   )}
-                  <span>{isLocating ? 'Locating...' : '📍 Detect My GPS Location'}</span>
+                  <span>{isLocating ? 'Locating...' : '📍 Detect GPS'}</span>
                 </button>
-              </div>
-
-              <input
-                type="text"
-                required
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-                placeholder="Enter complete street address and apartment number"
-              />
-            </div>
+              }
+            />
 
             {/* Geolocation: Latitude & Longitude */}
             <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80">
-              <div>
-                <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
-                  <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Latitude
-                </label>
-                <input
-                  type="text"
-                  value={latitude}
-                  onChange={(e) => setLatitude(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
-                  placeholder="e.g. 13.0827"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
-                  <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Longitude
-                </label>
-                <input
-                  type="text"
-                  value={longitude}
-                  onChange={(e) => setLongitude(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
-                  placeholder="e.g. 80.2707"
-                />
-              </div>
+              <ModernInput
+                label="Latitude"
+                icon={Compass}
+                inputMode="decimal"
+                value={latitude}
+                onChange={(e) => setLatitude(e.target.value)}
+                onClear={() => setLatitude('')}
+                placeholder="e.g. 13.0827"
+              />
+              <ModernInput
+                label="Longitude"
+                icon={Compass}
+                inputMode="decimal"
+                value={longitude}
+                onChange={(e) => setLongitude(e.target.value)}
+                onClear={() => setLongitude('')}
+                placeholder="e.g. 80.2707"
+              />
             </div>
           </div>
 

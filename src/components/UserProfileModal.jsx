@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { X, User, Phone, MapPin, Hash, Save, CheckCircle, Navigation, Loader2, Compass } from 'lucide-react';
 import { getAbsolutePinpointLocation } from '../services/locationService';
+import { ModernInput, ModernTextArea } from './ModernInput';
 
 export const UserProfileModal = () => {
   const { isProfileModalOpen, setIsProfileModalOpen, userProfile, saveUserProfile, showToast } = useShop();
@@ -82,40 +83,41 @@ export const UserProfileModal = () => {
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
           
-          <div>
-            <label className="block text-xs font-bold text-slate-400 mb-1 flex items-center">
-              <User className="w-3.5 h-3.5 mr-1 text-amber-500" /> Full Name
-            </label>
-            <input
-              type="text"
-              required
-              value={form.fullName || ''}
-              onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-              placeholder="Your full name"
-            />
-          </div>
+          <ModernInput
+            label="Full Name"
+            icon={User}
+            required
+            value={form.fullName}
+            onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+            onClear={() => setForm({ ...form, fullName: '' })}
+            placeholder="Your full name"
+            autoComplete="name"
+            enterKeyHint="next"
+          />
 
-          <div>
-            <label className="block text-xs font-bold text-slate-400 mb-1 flex items-center">
-              <Phone className="w-3.5 h-3.5 mr-1 text-amber-500" /> Contact Phone
-            </label>
-            <input
-              type="text"
-              required
-              value={form.phone || ''}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-              placeholder="Your phone number"
-            />
-          </div>
+          <ModernInput
+            label="Contact Phone"
+            icon={Phone}
+            required
+            type="tel"
+            inputMode="tel"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            onClear={() => setForm({ ...form, phone: '' })}
+            placeholder="Your contact number"
+            autoComplete="tel"
+            enterKeyHint="next"
+          />
 
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-bold text-slate-400 flex items-center">
-                <MapPin className="w-3.5 h-3.5 mr-1 text-amber-500" /> Delivery Address
-              </label>
-
+          <ModernTextArea
+            label="Delivery Address"
+            icon={MapPin}
+            required
+            rows={2}
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            placeholder="Door number, street name, landmark, area"
+            rightElement={
               <button
                 type="button"
                 onClick={handleDetectGPS}
@@ -127,61 +129,43 @@ export const UserProfileModal = () => {
                 ) : (
                   <Navigation className="w-3.5 h-3.5" />
                 )}
-                <span>{isLocating ? 'Locating...' : '📍 Detect My GPS Location'}</span>
+                <span>{isLocating ? 'Locating...' : '📍 Detect My GPS'}</span>
               </button>
-            </div>
-
-            <textarea
-              required
-              rows={2}
-              value={form.address || ''}
-              onChange={(e) => setForm({ ...form, address: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500 resize-none"
-              placeholder="Door number, street name, landmark, area"
-            />
-          </div>
+            }
+          />
 
           {/* Geolocation: Latitude & Longitude */}
-          <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800/80">
-            <div>
-              <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
-                <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Latitude
-              </label>
-              <input
-                type="text"
-                value={form.latitude || ''}
-                onChange={(e) => setForm({ ...form, latitude: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
-                placeholder="e.g. 13.0827"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
-                <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Longitude
-              </label>
-              <input
-                type="text"
-                value={form.longitude || ''}
-                onChange={(e) => setForm({ ...form, longitude: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
-                placeholder="e.g. 80.2707"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-400 mb-1 flex items-center">
-              <Hash className="w-3.5 h-3.5 mr-1 text-amber-500" /> LPG Connection / Consumer ID
-            </label>
-            <input
-              type="text"
-              required
-              value={form.consumerId || ''}
-              onChange={(e) => setForm({ ...form, consumerId: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
-              placeholder="e.g. KSG-984210"
+          <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80">
+            <ModernInput
+              label="Latitude"
+              icon={Compass}
+              inputMode="decimal"
+              value={form.latitude}
+              onChange={(e) => setForm({ ...form, latitude: e.target.value })}
+              onClear={() => setForm({ ...form, latitude: '' })}
+              placeholder="e.g. 13.0827"
+            />
+            <ModernInput
+              label="Longitude"
+              icon={Compass}
+              inputMode="decimal"
+              value={form.longitude}
+              onChange={(e) => setForm({ ...form, longitude: e.target.value })}
+              onClear={() => setForm({ ...form, longitude: '' })}
+              placeholder="e.g. 80.2707"
             />
           </div>
+
+          <ModernInput
+            label="LPG Connection / Consumer ID"
+            icon={Hash}
+            required
+            value={form.consumerId}
+            onChange={(e) => setForm({ ...form, consumerId: e.target.value })}
+            onClear={() => setForm({ ...form, consumerId: '' })}
+            placeholder="e.g. KSG-984210"
+            enterKeyHint="done"
+          />
 
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 text-xs text-amber-200 flex items-start space-x-2">
             <CheckCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
