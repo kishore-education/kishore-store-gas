@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
-import { X, User, Phone, MapPin, Hash, CreditCard, Truck, Sparkles, CheckCircle, Flame, Navigation, Loader2 } from 'lucide-react';
+import { X, User, Phone, MapPin, Hash, CreditCard, Truck, Sparkles, CheckCircle, Flame, Navigation, Loader2, Compass } from 'lucide-react';
 import { getAbsolutePinpointLocation } from '../services/locationService';
 
 export const OrderModal = () => {
@@ -47,7 +47,9 @@ export const OrderModal = () => {
         ...prev,
         address: loc.address,
         mapsUrl: loc.mapsUrl,
-        gpsCoords: loc.gpsCoords
+        gpsCoords: loc.gpsCoords,
+        latitude: loc.lat,
+        longitude: loc.lng
       }));
 
       showToast(`Pinpoint Location Detected (±${loc.accuracy}m radius)!`, 'success');
@@ -180,7 +182,7 @@ export const OrderModal = () => {
               <textarea
                 required
                 rows={2}
-                value={form.address}
+                value={form.address || ''}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 resize-none"
               />
@@ -191,6 +193,34 @@ export const OrderModal = () => {
                   <span>GPS Map Coordinates Attached</span>
                 </div>
               )}
+            </div>
+
+            {/* Geolocation: Latitude & Longitude */}
+            <div className="grid grid-cols-2 gap-3 bg-slate-950/80 p-3 rounded-2xl border border-slate-800/80">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1 flex items-center">
+                  <Compass className="w-3 h-3 mr-1 text-amber-400" /> Latitude
+                </label>
+                <input
+                  type="text"
+                  value={form.latitude || ''}
+                  onChange={(e) => setForm({ ...form, latitude: e.target.value })}
+                  className="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
+                  placeholder="e.g. 13.0827"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-400 mb-1 flex items-center">
+                  <Compass className="w-3 h-3 mr-1 text-amber-400" /> Longitude
+                </label>
+                <input
+                  type="text"
+                  value={form.longitude || ''}
+                  onChange={(e) => setForm({ ...form, longitude: e.target.value })}
+                  className="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
+                  placeholder="e.g. 80.2707"
+                />
+              </div>
             </div>
 
             <div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useShop } from '../context/ShopContext';
-import { ArrowLeft, CheckCircle, Truck, MapPin, Phone, User, Hash, Zap, Printer, ShieldCheck, Clock } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Truck, MapPin, Phone, User, Hash, Zap, Printer, ShieldCheck, Clock, Compass, ExternalLink } from 'lucide-react';
 
 export const OrderDetailsPage = () => {
   const { 
@@ -123,28 +123,53 @@ export const OrderDetailsPage = () => {
               <span className="text-slate-500 font-medium flex items-center">
                 <User className="w-3.5 h-3.5 mr-1 text-amber-400" /> Customer Name
               </span>
-              <div className="text-slate-100 font-bold">{userProfile.fullName}</div>
+              <div className="text-slate-100 font-bold">{userProfile.fullName || 'N/A'}</div>
             </div>
 
             <div className="space-y-1">
               <span className="text-slate-500 font-medium flex items-center">
                 <Phone className="w-3.5 h-3.5 mr-1 text-amber-400" /> Contact Phone
               </span>
-              <div className="text-slate-100 font-bold">{userProfile.phone}</div>
+              <div className="text-slate-100 font-bold">{userProfile.phone || 'N/A'}</div>
             </div>
 
             <div className="space-y-1">
               <span className="text-slate-500 font-medium flex items-center">
                 <Hash className="w-3.5 h-3.5 mr-1 text-amber-400" /> LPG Connection Consumer ID
               </span>
-              <div className="text-slate-100 font-bold">{userProfile.consumerId}</div>
+              <div className="text-slate-100 font-bold">{userProfile.consumerId || 'N/A'}</div>
             </div>
 
             <div className="space-y-1">
               <span className="text-slate-500 font-medium flex items-center">
                 <MapPin className="w-3.5 h-3.5 mr-1 text-amber-400" /> Complete Delivery Address
               </span>
-              <div className="text-slate-100 font-bold">{userProfile.address}</div>
+              <div className="text-slate-100 font-bold">{userProfile.address || 'N/A'}</div>
+            </div>
+
+            {/* Geolocation Section */}
+            <div className="space-y-1 sm:col-span-2 pt-2 border-t border-slate-800/80">
+              <span className="text-slate-500 font-medium flex items-center">
+                <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Precise Geolocation Coordinates (Latitude / Longitude)
+              </span>
+              <div className="flex flex-wrap items-center justify-between gap-2 text-slate-100 font-mono text-xs font-bold bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                <span>
+                  {userProfile.latitude && userProfile.longitude
+                    ? `Lat: ${userProfile.latitude} | Lng: ${userProfile.longitude}`
+                    : (userProfile.gpsCoords ? `Coords: ${userProfile.gpsCoords}` : 'No GPS coordinates saved')}
+                </span>
+                {userProfile.mapsUrl && (
+                  <a
+                    href={userProfile.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-amber-400 hover:text-amber-300 text-[11px] font-sans font-extrabold"
+                  >
+                    <span>Open in Maps</span>
+                    <ExternalLink className="w-3 h-3 ml-1" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>

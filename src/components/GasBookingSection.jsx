@@ -1,17 +1,43 @@
 import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
-import { Flame, X, Check, Truck, ShieldAlert, Clock, MapPin, Phone, Hash } from 'lucide-react';
+import { Flame, X, Check, Truck, ShieldAlert, Clock, MapPin, Phone, Hash, Navigation, Loader2, Compass } from 'lucide-react';
+import { getAbsolutePinpointLocation } from '../services/locationService';
 
 export const GasBookingSection = () => {
-  const { isGasModalOpen, setIsGasModalOpen, addToCart, products, setIsCartOpen, userProfile } = useShop();
+  const { isGasModalOpen, setIsGasModalOpen, addToCart, products, setIsCartOpen, userProfile, showToast } = useShop();
 
   const gasProducts = products.filter(p => p.category === 'gas');
   const [selectedProduct, setSelectedProduct] = useState(gasProducts[0] || null);
   const [consumerId, setConsumerId] = useState(userProfile?.consumerId || '');
   const [phone, setPhone] = useState(userProfile?.phone || '');
   const [address, setAddress] = useState(userProfile?.address || '');
+  const [latitude, setLatitude] = useState(userProfile?.latitude || '');
+  const [longitude, setLongitude] = useState(userProfile?.longitude || '');
   const [deliverySlot, setDeliverySlot] = useState('express');
   const [quantity, setQuantity] = useState(1);
+  const [isLocating, setIsLocating] = useState(false);
+
+  const handleDetectGPS = async () => {
+    setIsLocating(true);
+    showToast('Pinpointing GPS location...', 'info');
+
+    try {
+      const loc = await getAbsolutePinpointLocation({
+        onProgress: (acc) => showToast(`Tracking GPS... Accuracy: ±${acc}m`, 'info'),
+        targetAccuracyMeters: 15,
+        maxWaitMs: 8000
+      });
+
+      setAddress(loc.address);
+      setLatitude(loc.lat);
+      setLongitude(loc.lng);
+      showToast(`Location detected (±${loc.accuracy}m radius)!`, 'success');
+    } catch (err) {
+      showToast(err.message || 'Unable to detect location', 'error');
+    } finally {
+      setIsLocating(false);
+    }
+  };
 
   if (!isGasModalOpen) return null;
 
@@ -23,6 +49,8 @@ export const GasBookingSection = () => {
       consumerId,
       phone,
       address,
+      latitude,
+      longitude,
       deliverySlot: deliverySlot === 'express' ? 'Express 2-4 Hours' : 'Standard Delivery'
     });
 
@@ -127,9 +155,26 @@ export const GasBookingSection = () => {
             </div>
 
             <div>
-              <label className="block text-xs text-slate-400 mb-1 flex items-center">
-                <MapPin className="w-3.5 h-3.5 mr-1 text-amber-500" /> Home / Business Address
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs text-slate-400 flex items-center">
+                  <MapPin className="w-3.5 h-3.5 mr-1 text-amber-500" /> Home / Business Address
+                </label>
+
+                <button
+                  type="button"
+                  onClick={handleDetectGPS}
+                  disabled={isLocating}
+                  className="inline-flex items-center space-x-1 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  {isLocating ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Navigation className="w-3.5 h-3.5" />
+                  )}
+                  <span>{isLocating ? 'Locating...' : '📍 Detect My GPS Location'}</span>
+                </button>
+              </div>
+
               <input
                 type="text"
                 required
@@ -138,6 +183,34 @@ export const GasBookingSection = () => {
                 className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
                 placeholder="Enter complete street address and apartment number"
               />
+            </div>
+
+            {/* Geolocation: Latitude & Longitude */}
+            <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80">
+              <div>
+                <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
+                  <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Latitude
+                </label>
+                <input
+                  type="text"
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
+                  placeholder="e.g. 13.0827"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
+                  <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Longitude
+                </label>
+                <input
+                  type="text"
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
+                  placeholder="e.g. 80.2707"
+                />
+              </div>
             </div>
           </div>
 

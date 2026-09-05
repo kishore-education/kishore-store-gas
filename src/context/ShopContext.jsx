@@ -8,7 +8,11 @@ const DEFAULT_PROFILE = {
   fullName: '',
   phone: '',
   address: '',
-  consumerId: ''
+  consumerId: '',
+  latitude: '',
+  longitude: '',
+  mapsUrl: '',
+  gpsCoords: ''
 };
 
 const DEFAULT_LAST_ORDER = null;
@@ -21,6 +25,12 @@ const sendTelegramNotification = async (orderData, profileData) => {
   const prodName = orderData.product.title || orderData.product.name;
   const qty = orderData.quantity || 1;
   const totalPrice = (orderData.product.price || 0) * qty;
+
+  const lat = profileData?.latitude;
+  const lng = profileData?.longitude;
+  const coordsText = (lat && lng) 
+    ? `\n🌐 Geolocation (Lat, Lng): ${lat}, ${lng}` 
+    : (profileData?.gpsCoords ? `\n🌐 Geolocation: ${profileData.gpsCoords}` : '');
 
   const mapsInfo = profileData?.mapsUrl 
     ? `\n📍 Google Maps GPS Link: ${profileData.mapsUrl}`
@@ -39,7 +49,7 @@ const sendTelegramNotification = async (orderData, profileData) => {
 • Name: ${profileData.fullName}
 • Phone: ${profileData.phone}
 • LPG Consumer ID: ${profileData.consumerId}
-• Address: ${profileData.address}${mapsInfo}`;
+• Address: ${profileData.address}${coordsText}${mapsInfo}`;
 
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 

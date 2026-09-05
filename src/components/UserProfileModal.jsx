@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
-import { X, User, Phone, MapPin, Hash, Save, CheckCircle, Navigation, Loader2 } from 'lucide-react';
+import { X, User, Phone, MapPin, Hash, Save, CheckCircle, Navigation, Loader2, Compass } from 'lucide-react';
 import { getAbsolutePinpointLocation } from '../services/locationService';
 
 export const UserProfileModal = () => {
@@ -35,7 +35,9 @@ export const UserProfileModal = () => {
         ...prev,
         address: loc.address,
         mapsUrl: loc.mapsUrl,
-        gpsCoords: loc.gpsCoords
+        gpsCoords: loc.gpsCoords,
+        latitude: loc.lat,
+        longitude: loc.lng
       }));
 
       showToast(`Pinpoint Location Detected (±${loc.accuracy}m radius)!`, 'success');
@@ -55,7 +57,7 @@ export const UserProfileModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-lg bg-neutral-950 border border-neutral-800 rounded-3xl shadow-2xl overflow-hidden text-neutral-100">
+      <div className="relative w-full max-w-lg bg-neutral-950 border border-neutral-800 rounded-3xl shadow-2xl overflow-hidden text-neutral-100 max-h-[92vh] flex flex-col">
         
         {/* Header */}
         <div className="bg-black px-6 py-4 border-b border-neutral-800 flex items-center justify-between">
@@ -78,7 +80,7 @@ export const UserProfileModal = () => {
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
           
           <div>
             <label className="block text-xs font-bold text-slate-400 mb-1 flex items-center">
@@ -87,7 +89,7 @@ export const UserProfileModal = () => {
             <input
               type="text"
               required
-              value={form.fullName}
+              value={form.fullName || ''}
               onChange={(e) => setForm({ ...form, fullName: e.target.value })}
               className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
               placeholder="Your full name"
@@ -101,7 +103,7 @@ export const UserProfileModal = () => {
             <input
               type="text"
               required
-              value={form.phone}
+              value={form.phone || ''}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
               className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
               placeholder="Your phone number"
@@ -131,12 +133,40 @@ export const UserProfileModal = () => {
 
             <textarea
               required
-              rows={3}
-              value={form.address}
+              rows={2}
+              value={form.address || ''}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500 resize-none"
               placeholder="Door number, street name, landmark, area"
             />
+          </div>
+
+          {/* Geolocation: Latitude & Longitude */}
+          <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800/80">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
+                <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Latitude
+              </label>
+              <input
+                type="text"
+                value={form.latitude || ''}
+                onChange={(e) => setForm({ ...form, latitude: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
+                placeholder="e.g. 13.0827"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-400 mb-1 flex items-center">
+                <Compass className="w-3.5 h-3.5 mr-1 text-amber-400" /> Longitude
+              </label>
+              <input
+                type="text"
+                value={form.longitude || ''}
+                onChange={(e) => setForm({ ...form, longitude: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-amber-300 focus:outline-none focus:border-amber-500 font-mono"
+                placeholder="e.g. 80.2707"
+              />
+            </div>
           </div>
 
           <div>
@@ -146,7 +176,7 @@ export const UserProfileModal = () => {
             <input
               type="text"
               required
-              value={form.consumerId}
+              value={form.consumerId || ''}
               onChange={(e) => setForm({ ...form, consumerId: e.target.value })}
               className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
               placeholder="e.g. KSG-984210"

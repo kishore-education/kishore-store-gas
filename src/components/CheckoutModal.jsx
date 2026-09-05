@@ -24,6 +24,8 @@ export const CheckoutModal = () => {
     email: '',
     phone: userProfile?.phone || '',
     street: userProfile?.address || '',
+    latitude: userProfile?.latitude || '',
+    longitude: userProfile?.longitude || '',
     city: '',
     zip: '',
     paymentMethod: 'cod'
@@ -38,7 +40,9 @@ export const CheckoutModal = () => {
         ...prev,
         fullName: userProfile.fullName || prev.fullName,
         phone: userProfile.phone || prev.phone,
-        street: userProfile.address || prev.street
+        street: userProfile.address || prev.street,
+        latitude: userProfile.latitude || prev.latitude,
+        longitude: userProfile.longitude || prev.longitude
       }));
     }
   }, [userProfile]);
@@ -300,6 +304,11 @@ export const CheckoutModal = () => {
                 </div>
                 <div className="text-slate-300 font-semibold">{formData.fullName} ({formData.phone})</div>
                 <div className="text-slate-400">{formData.street}</div>
+                {formData.latitude && formData.longitude && (
+                  <div className="text-amber-400 font-mono text-[11px] pt-1">
+                    🌐 Geolocation: Lat {formData.latitude}, Lng {formData.longitude}
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-center space-x-3 pt-2">
