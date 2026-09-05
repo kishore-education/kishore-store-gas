@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans bg-black text-neutral-100 overflow-x-hidden selection:bg-amber-500 selection:text-black;
+    background-color: #000000;
+  }
+}
+
+/* OLED Ultra-Dark Utilities */
+.glass-panel {
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(18, 18, 20, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  background: rgba(24, 24, 28, 0.95);
+  border-color: rgba(245, 158, 11, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.2);
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-400 to-red-500;
+}
+
+.gradient-blue-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500;
+}
+
+.gradient-gas-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-orange-500 to-amber-400;
+}
+
+/* Ultra Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f59e0b;
+}
+
+/* Shimmer Effect for Dark Skeleton Loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.02) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}

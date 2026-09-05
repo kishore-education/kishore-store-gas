@@ -1,0 +1,95 @@
+export const CATEGORIES = [
+  { id: 'all', name: 'All Cylinders', icon: 'Flame' },
+  { id: 'total', name: 'Total Gas', icon: 'Flame' },
+  { id: 'super', name: 'Super Gas', icon: 'Flame' },
+  { id: 'bharath', name: 'Bharath Gas', icon: 'Flame' },
+];
+
+export const PRODUCTS = [
+  {
+    id: '1',
+    name: 'TOTAL 12KG',
+    title: 'TOTAL 12KG',
+    price: 1150,
+    image: 'https://i.ibb.co/d6vR1tc/image.png',
+    category: 'total',
+    isGasRefill: true,
+    cylinderSize: '12 kg',
+    rating: 4.9,
+    reviewCount: 240,
+    stock: 50,
+    description: 'Certified Total 12KG Domestic LPG Gas Refill Cylinder with safety seal and weight check guarantee.'
+  },
+  {
+    id: '2',
+    name: 'Total 17kg',
+    title: 'Total 17kg',
+    price: 1600,
+    image: 'https://i.ibb.co/5s0y9HS/69175-removebg-preview.png',
+    category: 'total',
+    isGasRefill: true,
+    cylinderSize: '17 kg',
+    rating: 4.8,
+    reviewCount: 185,
+    stock: 40,
+    description: 'High capacity Total 17kg Commercial & Industrial LPG Gas Cylinder with pure propane/butane blend.'
+  },
+  {
+    id: '3',
+    name: 'Super 12kg',
+    title: 'Super 12kg',
+    price: 1180,
+    image: 'https://i.ibb.co/zx9RnM1/image.png',
+    category: 'super',
+    isGasRefill: true,
+    cylinderSize: '12 kg',
+    rating: 4.9,
+    reviewCount: 310,
+    stock: 60,
+    description: 'Super 12kg Domestic LPG Gas Refill Cylinder with tamper-proof safety lock seal.'
+  },
+  {
+    id: '4',
+    name: 'Super 17kg',
+    title: 'Super 17kg',
+    price: 1600,
+    image: 'https://i.ibb.co/mBMSHmN/supergas-cylinder-17kg-500x500-removebg-preview.png',
+    category: 'super',
+    isGasRefill: true,
+    cylinderSize: '17 kg',
+    rating: 4.8,
+    reviewCount: 195,
+    stock: 35,
+    description: 'Heavy duty Super 17kg Gas Cylinder for commercial cooking and high burner efficiency.'
+  },
+  {
+    id: '7',
+    name: 'Bharath 5kg',
+    title: 'Bharath 5kg',
+    price: 650,
+    image: 'https://i.ibb.co/xjn26SL/mini-removebg-preview.png',
+    category: 'bharath',
+    isGasRefill: true,
+    cylinderSize: '5 kg',
+    rating: 4.7,
+    reviewCount: 142,
+    stock: 75,
+    description: 'Compact Bharath 5kg Mini Gas Cylinder, ideal for small households, outdoor camping, and quick cooking.'
+  },
+  {
+    id: '9',
+    name: 'Bharath 19kg',
+    title: 'Bharath 19kg',
+    price: 1900,
+    image: 'https://i.ibb.co/QvYycsg/0p3bn4m4.png',
+    category: 'bharath',
+    isGasRefill: true,
+    cylinderSize: '19 kg',
+    rating: 4.9,
+    reviewCount: 420,
+    stock: 30,
+    description: 'Commercial grade Bharath 19kg Heavy Duty LPG Cylinder engineered for high volume usage.'
+  }
+];
+
+export const PROMO_CODES = {};

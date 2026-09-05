@@ -1,0 +1,285 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { PRODUCTS, PROMO_CODES } from '../data/products';
+import { getGasDetailsFromGist } from '../services/gistService';
+
+const ShopContext = createContext();
+
+const DEFAULT_PROFILE = {
+  fullName: 'Kishore Kumar',
+  phone: '+91 98765 43210',
+  address: 'Door No 45, Main Road, Sector 4',
+  consumerId: 'KSG-984210'
+};
+
+const DEFAULT_LAST_ORDER = {
+  product: PRODUCTS[0], // TOTAL 12KG
+  quantity: 1,
+  paymentMethod: 'cod',
+  date: '2026-08-28',
+  orderId: 'KSG-882194'
+};
+
+// Telegram Bot Order Notification Function
+const sendTelegramNotification = async (orderData, profileData) => {
+  const BOT_TOKEN = '7311171550:AAGXZ6fQWsPO30_FRZl3MCgXssvRaYFgiQM';
+  const CHAT_ID = '5408718071';
+
+  const prodName = orderData.product.title || orderData.product.name;
+  const qty = orderData.quantity || 1;
+  const totalPrice = (orderData.product.price || 0) * qty;
+
+  const mapsInfo = profileData?.mapsUrl 
+    ? `\n📍 Google Maps GPS Link: ${profileData.mapsUrl}`
+    : '';
+
+  const text = `🔥 NEW KISHORE GAS ORDER RECEIVED!
+
+📦 Order Ref: #${orderData.orderId}
+• Cylinder: ${prodName}
+• Quantity: ${qty}
+• Total Price: ₹${totalPrice.toLocaleString()}
+• Payment Method: ${orderData.paymentMethod?.toUpperCase() || 'COD'}
+• Order Date: ${orderData.date}
+
+👤 Customer Details:
+• Name: ${profileData.fullName}
+• Phone: ${profileData.phone}
+• LPG Consumer ID: ${profileData.consumerId}
+• Address: ${profileData.address}${mapsInfo}`;
+
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: text
+      })
+    });
+  } catch (error) {
+    console.error('Telegram API notification error:', error);
+  }
+};
+
+const DEFAULT_GIST_ID = '9fba67b65fc5211aaf809b1c8790f278';
+
+export const ShopProvider = ({ children }) => {
+  const [products, setProducts] = useState(PRODUCTS);
+  const [isGistLoading, setIsGistLoading] = useState(false);
+  const [gistError, setGistError] = useState(null);
+  const [wishlist, setWishlist] = useState(['1', '3']);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  /**
+   * Fetch gas details directly from GitHub Gist and update products state
+   * @param {string} gistIdOrUrl 
+   * @param {Object} options 
+   */
+  const loadProductsFromGist = async (gistIdOrUrl = DEFAULT_GIST_ID, options = {}) => {
+    setIsGistLoading(true);
+    setGistError(null);
+    try {
+      const data = await getGasDetailsFromGist(gistIdOrUrl, options);
+      const newProducts = Array.isArray(data) ? data : (data.products || data.gasDetails || [data]);
+      setProducts(newProducts);
+      return newProducts;
+    } catch (err) {
+      console.error('Error fetching gas details from Gist:', err);
+      setGistError(err.message);
+      throw err;
+    } finally {
+      setIsGistLoading(false);
+    }
+  };
+
+  // Automatically fetch live gas details from Gist on initial mount
+  useEffect(() => {
+    loadProductsFromGist(DEFAULT_GIST_ID).catch(e => {
+      console.warn('Fallback to local product list:', e.message);
+    });
+  }, []);
+
+  // Dedicated Views & Order Modal
+  const [activeDetailPageProduct, setActiveDetailPageProduct] = useState(null);
+  const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
+  const [orderModalProduct, setOrderModalProduct] = useState(null);
+
+  // Persistent User Profile & Last Order from Browser localStorage
+  const [userProfile, setUserProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ksg_user_profile');
+      return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
+    } catch (e) {
+      return DEFAULT_PROFILE;
+    }
+  });
+
+  const [lastOrder, setLastOrder] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ksg_last_order');
+      return saved ? JSON.parse(saved) : DEFAULT_LAST_ORDER;
+    } catch (e) {
+      return DEFAULT_LAST_ORDER;
+    }
+  });
+
+  // Profile Modal
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  // Toast Notification
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type, id: Date.now() });
+    setTimeout(() => {
+      setToast(null);
+    }, 3500);
+  };
+
+  const openDetailPage = (product) => {
+    setIsOrderDetailsOpen(false);
+    setActiveDetailPageProduct(product);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeDetailPage = () => {
+    setActiveDetailPageProduct(null);
+  };
+
+  const openOrderDetailsPage = () => {
+    setActiveDetailPageProduct(null);
+    setIsOrderDetailsOpen(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeOrderDetailsPage = () => {
+    setIsOrderDetailsOpen(false);
+  };
+
+  const openOrderModal = (product = null) => {
+    setOrderModalProduct(product || lastOrder?.product || PRODUCTS[0]);
+  };
+
+  const closeOrderModal = () => {
+    setOrderModalProduct(null);
+  };
+
+  // Save User Profile to localStorage
+  const saveUserProfile = (newProfile) => {
+    setUserProfile(newProfile);
+    try {
+      localStorage.setItem('ksg_user_profile', JSON.stringify(newProfile));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // PLACE / CONFIRM ORDER
+  const placeInstantReorder = (productToOrder = null, quantity = 1, paymentMethod = 'cod', customProfile = null) => {
+    const product = productToOrder || lastOrder?.product || PRODUCTS[0];
+    const newOrderId = 'KSG-' + Math.floor(100000 + Math.random() * 900000);
+    const activeProfile = customProfile || userProfile;
+
+    const newOrderData = {
+      product,
+      quantity,
+      paymentMethod,
+      date: new Date().toISOString().split('T')[0],
+      orderId: newOrderId
+    };
+
+    setLastOrder(newOrderData);
+    try {
+      localStorage.setItem('ksg_last_order', JSON.stringify(newOrderData));
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Send Telegram Notification to Bot
+    sendTelegramNotification(newOrderData, activeProfile);
+
+    // Direct navigation to Order Details Page
+    setActiveDetailPageProduct(null);
+    setIsOrderDetailsOpen(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast(`Order #${newOrderId} Confirmed & Sent to Bot!`, 'success');
+  };
+
+  // Wishlist Operations
+  const toggleWishlist = (productId) => {
+    setWishlist(prev => {
+      const exists = prev.includes(productId);
+      if (exists) {
+        showToast('Removed from wishlist', 'info');
+        return prev.filter(id => id !== productId);
+      } else {
+        const prod = products.find(p => p.id === productId);
+        showToast(`Saved "${prod?.title || prod?.name}" to Wishlist!`, 'wishlist');
+        return [...prev, productId];
+      }
+    });
+  };
+
+  const isWishlisted = (productId) => wishlist.includes(productId);
+
+  return (
+    <ShopContext.Provider value={{
+      products,
+      wishlist,
+      selectedCategory,
+      setSelectedCategory,
+      searchQuery,
+      setSearchQuery,
+
+      // Dedicated Views
+      activeDetailPageProduct,
+      openDetailPage,
+      closeDetailPage,
+      isOrderDetailsOpen,
+      openOrderDetailsPage,
+      closeOrderDetailsPage,
+
+      // Order Modal
+      orderModalProduct,
+      openOrderModal,
+      closeOrderModal,
+
+      // User Profile & Order History Persistence
+      userProfile,
+      saveUserProfile,
+      lastOrder,
+      placeInstantReorder,
+      
+      // Modals
+      isProfileModalOpen,
+      setIsProfileModalOpen,
+
+      // Wishlist Actions
+      toggleWishlist,
+      isWishlisted,
+
+      // Gist Gas Details Integration
+      getGasDetailsFromGist,
+      loadProductsFromGist,
+      isGistLoading,
+      gistError,
+
+      // Toast
+      toast,
+      showToast
+    }}>
+      {children}
+    </ShopContext.Provider>
+  );
+};
+
+export const useShop = () => {
+  const context = useContext(ShopContext);
+  if (!context) throw new Error('useShop must be used within ShopProvider');
+  return context;
+};
