@@ -21,13 +21,13 @@ export const Navbar = () => {
             closeDetailPage();
             closeOrderDetailsPage();
           }}
-          className="flex items-center space-x-2 cursor-pointer group"
+          className="flex items-center space-x-2.5 cursor-pointer group"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-red-600 p-0.5 flex items-center justify-center shadow-md">
-            <div className="w-full h-full bg-black rounded-[10px] flex items-center justify-center">
-              <Flame className="w-5 h-5 text-amber-500" />
-            </div>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="Kishore Gas Logo" 
+            className="w-10 h-10 object-contain rounded-xl border border-amber-500/30 shadow-lg shadow-amber-500/10 group-hover:scale-105 transition-transform" 
+          />
           <div className="flex flex-col">
             <span className="text-lg font-black text-white tracking-tight leading-none">
               Kishore <span className="gradient-text">Gas</span>
