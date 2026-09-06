@@ -68,6 +68,7 @@ const sendTelegramNotification = async (orderData, profileData) => {
 };
 
 const DEFAULT_GIST_ID = '9fba67b65fc5211aaf809b1c8790f278';
+const ACCESSORIES_GIST_ID = '218cf0ba10d89c5f52feea58f391267c';
 
 export const ShopProvider = ({ children }) => {
   const [products, setProducts] = useState(PRODUCTS);
@@ -78,32 +79,56 @@ export const ShopProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   /**
-   * Fetch gas details directly from GitHub Gist and update products state
-   * @param {string} gistIdOrUrl 
-   * @param {Object} options 
+   * Fetch gas & accessories details directly from GitHub Gists and update products state
    */
-  const loadProductsFromGist = async (gistIdOrUrl = DEFAULT_GIST_ID, options = {}) => {
+  const loadProductsFromGist = async () => {
     setIsGistLoading(true);
     setGistError(null);
     try {
-      const data = await getGasDetailsFromGist(gistIdOrUrl, options);
-      const newProducts = Array.isArray(data) ? data : (data.products || data.gasDetails || [data]);
-      setProducts(newProducts);
-      return newProducts;
+      const [gasRes, accRes] = await Promise.allSettled([
+        getGasDetailsFromGist(DEFAULT_GIST_ID),
+        getGasDetailsFromGist(ACCESSORIES_GIST_ID)
+      ]);
+
+      let combinedProducts = [];
+
+      if (gasRes.status === 'fulfilled') {
+        const data = gasRes.value;
+        const gasArr = Array.isArray(data) ? data : (data.products || data.gasDetails || [data]);
+        combinedProducts.push(...gasArr);
+      }
+
+      if (accRes.status === 'fulfilled') {
+        const data = accRes.value;
+        const accArr = Array.isArray(data) ? data : (data.products || data.accessories || [data]);
+        const formattedAcc = accArr.map(item => ({
+          ...item,
+          category: item.category || 'accessories',
+          isGasRefill: false
+        }));
+        combinedProducts.push(...formattedAcc);
+      }
+
+      if (combinedProducts.length > 0) {
+        setProducts(combinedProducts);
+        return combinedProducts;
+      } else {
+        setProducts(PRODUCTS);
+        return PRODUCTS;
+      }
     } catch (err) {
-      console.error('Error fetching gas details from Gist:', err);
+      console.warn('Fallback to local product list:', err.message);
       setGistError(err.message);
-      throw err;
+      setProducts(PRODUCTS);
+      return PRODUCTS;
     } finally {
       setIsGistLoading(false);
     }
   };
 
-  // Automatically fetch live gas details from Gist on initial mount
+  // Automatically fetch live gas & accessories details on initial mount
   useEffect(() => {
-    loadProductsFromGist(DEFAULT_GIST_ID).catch(e => {
-      console.warn('Fallback to local product list:', e.message);
-    });
+    loadProductsFromGist();
   }, []);
 
   // Dedicated Views & Order Modal

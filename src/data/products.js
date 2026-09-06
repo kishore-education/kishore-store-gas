@@ -1,8 +1,10 @@
 export const CATEGORIES = [
-  { id: 'all', name: 'All Cylinders', icon: 'Flame' },
-  { id: 'total', name: 'Total Gas', icon: 'Flame' },
-  { id: 'super', name: 'Super Gas', icon: 'Flame' },
-  { id: 'bharath', name: 'Bharath Gas', icon: 'Flame' },
+  { id: 'all', name: 'All Products', icon: 'Sparkles', count: 9 },
+  { id: 'gas', name: 'Gas Cylinders', icon: 'Flame', count: 6 },
+  { id: 'accessories', name: 'Gas Accessories', icon: 'Wrench', count: 3 },
+  { id: 'total', name: 'Total Gas', icon: 'Flame', count: 2 },
+  { id: 'super', name: 'Super Gas', icon: 'Flame', count: 2 },
+  { id: 'bharath', name: 'Bharath Gas', icon: 'Flame', count: 2 },
 ];
 
 export const PRODUCTS = [
@@ -89,6 +91,48 @@ export const PRODUCTS = [
     reviewCount: 420,
     stock: 30,
     description: 'Commercial grade Bharath 19kg Heavy Duty LPG Cylinder engineered for high volume usage.'
+  },
+  {
+    id: 'acc_1',
+    name: 'LPG Gas Hose Pipe',
+    title: 'High-Pressure LPG Gas Hose Pipe',
+    price: 350,
+    image: 'https://i.ibb.co/TxD087d4/gas-Pipe.png',
+    category: 'accessories',
+    isGasRefill: false,
+    cylinderSize: null,
+    rating: 4.8,
+    reviewCount: 115,
+    stock: 80,
+    description: 'Durable steel-wire reinforced high-pressure LPG gas hose pipe designed for leak-proof domestic and commercial safety.'
+  },
+  {
+    id: 'acc_2',
+    name: 'LPG Gas Regulator',
+    title: 'Low-Pressure LPG Gas Regulator',
+    price: 450,
+    image: 'https://i.ibb.co/KcXgWJ97/regulator.png',
+    category: 'accessories',
+    isGasRefill: false,
+    cylinderSize: null,
+    rating: 4.8,
+    reviewCount: 98,
+    stock: 65,
+    description: 'Certified high-durability LPG gas cylinder regulator with safety lock mechanism for domestic gas connections.'
+  },
+  {
+    id: 'acc_3',
+    name: 'Gas Stove Ring',
+    title: 'Gas Stove Ring',
+    price: 199,
+    image: 'https://i.ibb.co/S7VKp1JD/Screenshot-6-9-2026-73927-www-amazon-in.jpg',
+    category: 'accessories',
+    isGasRefill: false,
+    cylinderSize: null,
+    rating: 4.6,
+    reviewCount: 75,
+    stock: 50,
+    description: 'Durable heat-resistant gas stove pipe support ring.'
   }
 ];
 

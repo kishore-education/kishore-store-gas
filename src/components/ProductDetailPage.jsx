@@ -29,7 +29,7 @@ export const ProductDetailPage = () => {
             className="flex items-center space-x-2 text-xs font-bold text-amber-400 hover:text-amber-300 bg-neutral-900 px-3.5 py-2 rounded-xl border border-neutral-800 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>View All Cylinders</span>
+            <span>View All Products</span>
           </button>
 
           <span className="text-xs text-neutral-400 font-bold">Details</span>
@@ -50,7 +50,7 @@ export const ProductDetailPage = () => {
             />
             {isLastOrdered && (
               <span className="absolute top-4 left-4 px-3 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xs font-black rounded-full uppercase tracking-wider flex items-center space-x-1">
-                <span>Lastly Ordered Cylinder</span>
+                <span>Lastly Ordered Item</span>
               </span>
             )}
           </div>
@@ -61,7 +61,7 @@ export const ProductDetailPage = () => {
             <div>
               <div className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-1 flex items-center">
                 {isLastOrdered && <RotateCcw className="w-3.5 h-3.5 mr-1" />}
-                {isLastOrdered ? 'Your Default LPG Cylinder' : 'Kishore Certified LPG Refill'}
+                {product.category === 'accessories' ? 'Genuine LPG Accessory & Fitting' : 'Kishore Certified LPG Refill'}
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight">
                 {product.title || product.name}
@@ -86,15 +86,15 @@ export const ProductDetailPage = () => {
             <div className="space-y-2 text-xs text-neutral-300">
               <div className="flex items-center space-x-2">
                 <Check className="w-4 h-4 text-emerald-400" />
-                <span>100% Weight Checked & Leak Safety Inspected</span>
+                <span>100% Quality & Safety Inspected</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Truck className="w-4 h-4 text-emerald-400" />
-                <span>Guaranteed ⚡ <strong>10 Minute Express Delivery</strong> to <strong>{userProfile.address}</strong></span>
+                <span>Guaranteed ⚡ <strong>10 Minute Express Delivery</strong></span>
               </div>
               <div className="flex items-center space-x-2">
                 <ShieldCheck className="w-4 h-4 text-sky-400" />
-                <span>Official Safety Lock Seal Intact</span>
+                <span>Official Safety Quality Guarantee</span>
               </div>
             </div>
 
@@ -125,7 +125,7 @@ export const ProductDetailPage = () => {
                 className="w-full py-4 bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-black font-black text-base rounded-2xl shadow-xl shadow-red-600/30 hover:scale-[1.01] transition-all flex items-center justify-center space-x-2"
               >
                 <ShoppingBag className="w-5 h-5 fill-black stroke-black" />
-                <span>Order Cylinder (₹{(product.price * quantity).toLocaleString()})</span>
+                <span>Order Now (₹{(product.price * quantity).toLocaleString()})</span>
               </button>
             </div>
 

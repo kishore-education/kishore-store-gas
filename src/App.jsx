@@ -2,6 +2,7 @@ import React from 'react';
 import { ShopProvider, useShop } from './context/ShopContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { CategoryCoverBanners } from './components/CategoryCoverBanners';
 import { ProductGrid } from './components/ProductGrid';
 import { ProductDetailPage } from './components/ProductDetailPage';
 import { OrderDetailsPage } from './components/OrderDetailsPage';
@@ -26,6 +27,7 @@ function MainContent() {
     <>
       <Hero />
       <main className="flex-grow">
+        <CategoryCoverBanners />
         <ProductGrid />
       </main>
     </>

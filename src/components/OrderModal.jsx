@@ -113,7 +113,9 @@ export const OrderModal = () => {
               <Flame className="w-5 h-5 text-amber-500" />
             </div>
             <div>
-              <h3 className="text-lg font-extrabold text-white">Order Gas Cylinder</h3>
+              <h3 className="text-lg font-extrabold text-white">
+                {product?.category === 'accessories' ? 'Order Gas Accessory' : 'Order Gas Cylinder'}
+              </h3>
               <p className="text-xs text-neutral-400">Verify delivery address & choose payment</p>
             </div>
           </div>
