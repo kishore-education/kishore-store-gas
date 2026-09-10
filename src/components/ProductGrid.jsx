@@ -2,7 +2,7 @@ import React from 'react';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from './ProductCard';
 import { CATEGORIES } from '../data/products';
-import { Flame, Wrench, Sparkles, Filter } from 'lucide-react';
+import { Flame, Wrench, Sparkles, Filter, PackageCheck } from 'lucide-react';
 
 export const ProductGrid = () => {
   const { products, selectedCategory, setSelectedCategory } = useShop();
@@ -10,12 +10,14 @@ export const ProductGrid = () => {
   // Filter products based on selectedCategory
   const filteredProducts = products.filter(product => {
     if (selectedCategory === 'all') return true;
-    if (selectedCategory === 'gas') return product.category !== 'accessories';
+    if (selectedCategory === 'new_connection') return product.category === 'new_connection' || product.category === 'bundle';
+    if (selectedCategory === 'gas') return product.category !== 'accessories' && product.category !== 'new_connection' && product.category !== 'bundle';
     if (selectedCategory === 'accessories') return product.category === 'accessories';
     return product.category === selectedCategory;
   });
 
   const getCategoryTitle = () => {
+    if (selectedCategory === 'new_connection') return 'New Gas Connection Kits';
     if (selectedCategory === 'gas') return 'LPG Gas Cylinders';
     if (selectedCategory === 'accessories') return 'Gas Accessories & Spare Parts';
     if (selectedCategory === 'total') return 'Total Gas Cylinders';
@@ -41,7 +43,9 @@ export const ProductGrid = () => {
                   : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
               }`}
             >
-              {cat.id === 'accessories' ? (
+              {cat.id === 'new_connection' ? (
+                <PackageCheck className={`w-3.5 h-3.5 ${isActive ? 'text-slate-950' : 'text-emerald-400'}`} />
+              ) : cat.id === 'accessories' ? (
                 <Wrench className={`w-3.5 h-3.5 ${isActive ? 'text-slate-950' : 'text-sky-400'}`} />
               ) : (
                 <Flame className={`w-3.5 h-3.5 ${isActive ? 'text-slate-950' : 'text-amber-400'}`} />
@@ -58,6 +62,11 @@ export const ProductGrid = () => {
           <h2 className="text-base sm:text-lg font-black text-white tracking-tight">
             {getCategoryTitle()}
           </h2>
+          {selectedCategory === 'new_connection' && (
+            <span className="text-[10px] uppercase font-black tracking-widest text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/30">
+              📦 New Connection
+            </span>
+          )}
           {selectedCategory === 'accessories' && (
             <span className="text-[10px] uppercase font-black tracking-widest text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-md border border-sky-500/30">
               🛠️ Accessories

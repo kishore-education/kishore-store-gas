@@ -9,6 +9,7 @@ import { OrderDetailsPage } from './components/OrderDetailsPage';
 import { OrderModal } from './components/OrderModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { FloatingActions } from './components/FloatingActions';
 import { Toast } from './components/Toast';
 import { Footer } from './components/Footer';
 
@@ -47,6 +48,9 @@ export function App() {
 
         {/* Footer */}
         <Footer />
+
+        {/* Floating Call & Share Buttons */}
+        <FloatingActions />
 
         {/* App-like Mobile Bottom Navigation */}
         <MobileBottomNav />

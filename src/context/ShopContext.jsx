@@ -69,6 +69,7 @@ const sendTelegramNotification = async (orderData, profileData) => {
 
 const DEFAULT_GIST_ID = '9fba67b65fc5211aaf809b1c8790f278';
 const ACCESSORIES_GIST_ID = '218cf0ba10d89c5f52feea58f391267c';
+const NEW_CONNECTION_GIST_ID = 'c3799c89161e4d0b2aa73df65bf63b65';
 
 export const ShopProvider = ({ children }) => {
   const [products, setProducts] = useState(PRODUCTS);
@@ -79,25 +80,41 @@ export const ShopProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   /**
-   * Fetch gas & accessories details directly from GitHub Gists and update products state
+   * Fetch gas, accessories & new connection details directly from GitHub Gists and update products state
    */
   const loadProductsFromGist = async () => {
     setIsGistLoading(true);
     setGistError(null);
     try {
-      const [gasRes, accRes] = await Promise.allSettled([
+      const [gasRes, accRes, connRes] = await Promise.allSettled([
         getGasDetailsFromGist(DEFAULT_GIST_ID),
-        getGasDetailsFromGist(ACCESSORIES_GIST_ID)
+        getGasDetailsFromGist(ACCESSORIES_GIST_ID),
+        getGasDetailsFromGist(NEW_CONNECTION_GIST_ID)
       ]);
 
       let combinedProducts = [];
 
+      // 1. New Connection Kits & Combos (placed FIRST!)
+      if (connRes.status === 'fulfilled') {
+        const data = connRes.value;
+        const connArr = Array.isArray(data) ? data : (data.products || data.bundles || [data]);
+        const formattedConn = connArr.map(item => ({
+          ...item,
+          id: item.id ? `nc_${item.id}` : `nc_${Math.random()}`,
+          category: 'new_connection',
+          isGasRefill: false
+        }));
+        combinedProducts.push(...formattedConn);
+      }
+
+      // 2. Gas Cylinders
       if (gasRes.status === 'fulfilled') {
         const data = gasRes.value;
         const gasArr = Array.isArray(data) ? data : (data.products || data.gasDetails || [data]);
         combinedProducts.push(...gasArr);
       }
 
+      // 3. Accessories
       if (accRes.status === 'fulfilled') {
         const data = accRes.value;
         const accArr = Array.isArray(data) ? data : (data.products || data.accessories || [data]);

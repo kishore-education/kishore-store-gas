@@ -1,5 +1,6 @@
 export const CATEGORIES = [
-  { id: 'all', name: 'All Products', icon: 'Sparkles', count: 9 },
+  { id: 'all', name: 'All Products', icon: 'Sparkles', count: 12 },
+  { id: 'new_connection', name: 'New Connection', icon: 'PackageCheck', count: 3 },
   { id: 'gas', name: 'Gas Cylinders', icon: 'Flame', count: 6 },
   { id: 'accessories', name: 'Gas Accessories', icon: 'Wrench', count: 3 },
   { id: 'total', name: 'Total Gas', icon: 'Flame', count: 2 },
@@ -8,6 +9,48 @@ export const CATEGORIES = [
 ];
 
 export const PRODUCTS = [
+  {
+    id: 'nc_1',
+    name: 'Total 12Kg Gas Connection Kit',
+    title: 'New Connection Combo: Stove, Hose Pipe, Regulator & Ring',
+    price: 5100,
+    image: 'https://i.ibb.co/TBdYqVRw/image.png',
+    category: 'new_connection',
+    isGasRefill: false,
+    cylinderSize: '12 kg',
+    rating: 4.7,
+    reviewCount: 12,
+    stock: 50,
+    description: 'An all-in-one new gas connection bundle. Includes a durable heat-resistant gas stove, high-pressure steel-wire reinforced LPG hose pipe, certified low-pressure regulator, and a support ring.'
+  },
+  {
+    id: 'nc_2',
+    name: '5kg Gas Connection Kit',
+    title: 'New Connection Combo: Stove, Hose Pipe, Regulator & Ring',
+    price: 3600,
+    image: 'https://i.ibb.co/MdGwH8G/image.png',
+    category: 'new_connection',
+    isGasRefill: false,
+    cylinderSize: '5 kg',
+    rating: 4.7,
+    reviewCount: 12,
+    stock: 50,
+    description: 'An all-in-one new gas connection bundle. Includes a durable heat-resistant gas stove, high-pressure steel-wire reinforced LPG hose pipe, certified low-pressure regulator, and a support ring.'
+  },
+  {
+    id: 'nc_3',
+    name: '5kg Gas Connection single stove',
+    title: '5kg Gas Connection Single Stove',
+    price: 3200,
+    image: 'https://i.ibb.co/VYtQqRk1/image.png',
+    category: 'new_connection',
+    isGasRefill: false,
+    cylinderSize: '5 kg',
+    rating: 4.7,
+    reviewCount: 12,
+    stock: 50,
+    description: 'Single stove 5kg new gas connection kit.'
+  },
   {
     id: '1',
     name: 'TOTAL 12KG',

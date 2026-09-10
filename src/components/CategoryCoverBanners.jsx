@@ -1,16 +1,19 @@
 import React from 'react';
 import { useShop } from '../context/ShopContext';
-import { Flame, Wrench, Sparkles } from 'lucide-react';
+import { Flame, Wrench, Sparkles, PackageCheck } from 'lucide-react';
 
 export const CategoryCoverBanners = () => {
   const { products, selectedCategory, setSelectedCategory } = useShop();
 
-  const gasProducts = products.filter(p => p.category !== 'accessories');
+  const connProducts = products.filter(p => p.category === 'new_connection' || p.category === 'bundle');
+  const gasProducts = products.filter(p => p.category !== 'accessories' && p.category !== 'new_connection' && p.category !== 'bundle');
   const accProducts = products.filter(p => p.category === 'accessories');
 
+  const firstConnProduct = connProducts[0];
   const firstGasProduct = gasProducts[0];
   const firstAccProduct = accProducts[0];
 
+  const connCoverImage = firstConnProduct?.image || 'https://i.ibb.co/TBdYqVRw/image.png';
   const gasCoverImage = firstGasProduct?.image || 'https://i.ibb.co/d6vR1tc/image.png';
   const accCoverImage = firstAccProduct?.image || 'https://i.ibb.co/TxD087d4/gas-Pipe.png';
 
@@ -33,20 +36,50 @@ export const CategoryCoverBanners = () => {
         <span className="text-[11px] text-slate-500 font-semibold">Tap cover image to view products</span>
       </div>
 
-      {/* 2 Pure Image Category Cover Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+      {/* 3 Pure Image Category Cover Cards */}
+      <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
         
-        {/* Category Cover Image Card 1: LPG Gas Cylinders */}
+        {/* Category Cover Image Card 1: New Connection */}
+        <div
+          onClick={() => handleSelectCategory('new_connection')}
+          className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border transition-all duration-300 cursor-pointer aspect-[4/3] bg-slate-950 p-2 sm:p-4 flex flex-col justify-between items-center ${
+            selectedCategory === 'new_connection'
+              ? 'border-emerald-500 shadow-xl shadow-emerald-500/10 ring-2 ring-emerald-500/20'
+              : 'border-slate-800 hover:border-emerald-500/60'
+          }`}
+        >
+          {/* Main Cover Image Only */}
+          <div className="w-full h-full flex items-center justify-center p-1 sm:p-2">
+            <img
+              src={connCoverImage}
+              alt="New Connection Category"
+              className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+            />
+          </div>
+
+          {/* Minimal Floating Label Pill */}
+          <div className="absolute bottom-1.5 sm:bottom-2.5 inset-x-1.5 sm:inset-x-2.5 bg-slate-900/90 backdrop-blur-md border border-slate-800/90 py-1 sm:py-1.5 px-2 sm:px-3 rounded-xl sm:rounded-2xl flex items-center justify-between group-hover:border-emerald-500/50 transition-colors">
+            <span className="text-[10px] sm:text-xs font-black text-white truncate flex items-center space-x-1">
+              <PackageCheck className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-emerald-400 flex-shrink-0" />
+              <span className="truncate">New Connection</span>
+            </span>
+            <span className="text-[9px] sm:text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-1 sm:px-1.5 py-0.5 rounded-md">
+              {connProducts.length}
+            </span>
+          </div>
+        </div>
+
+        {/* Category Cover Image Card 2: LPG Gas Cylinders */}
         <div
           onClick={() => handleSelectCategory('gas')}
-          className={`group relative overflow-hidden rounded-3xl border transition-all duration-300 cursor-pointer aspect-[4/3] bg-slate-950 p-4 flex flex-col justify-between items-center ${
+          className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border transition-all duration-300 cursor-pointer aspect-[4/3] bg-slate-950 p-2 sm:p-4 flex flex-col justify-between items-center ${
             selectedCategory === 'gas' || selectedCategory === 'total' || selectedCategory === 'super' || selectedCategory === 'bharath'
               ? 'border-amber-500 shadow-xl shadow-amber-500/10 ring-2 ring-amber-500/20'
               : 'border-slate-800 hover:border-amber-500/60'
           }`}
         >
           {/* Main Cover Image Only */}
-          <div className="w-full h-full flex items-center justify-center p-2">
+          <div className="w-full h-full flex items-center justify-center p-1 sm:p-2">
             <img
               src={gasCoverImage}
               alt="Gas Cylinders Category"
@@ -55,28 +88,28 @@ export const CategoryCoverBanners = () => {
           </div>
 
           {/* Minimal Floating Label Pill */}
-          <div className="absolute bottom-2.5 inset-x-2.5 bg-slate-900/90 backdrop-blur-md border border-slate-800/90 py-1.5 px-3 rounded-2xl flex items-center justify-between group-hover:border-amber-500/50 transition-colors">
-            <span className="text-xs font-black text-white truncate flex items-center space-x-1">
-              <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400 flex-shrink-0" />
-              <span>Gas Cylinders</span>
+          <div className="absolute bottom-1.5 sm:bottom-2.5 inset-x-1.5 sm:inset-x-2.5 bg-slate-900/90 backdrop-blur-md border border-slate-800/90 py-1 sm:py-1.5 px-2 sm:px-3 rounded-xl sm:rounded-2xl flex items-center justify-between group-hover:border-amber-500/50 transition-colors">
+            <span className="text-[10px] sm:text-xs font-black text-white truncate flex items-center space-x-1">
+              <Flame className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-amber-400 fill-amber-400 flex-shrink-0" />
+              <span className="truncate">Gas Refill</span>
             </span>
-            <span className="text-[10px] font-black text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-md">
+            <span className="text-[9px] sm:text-[10px] font-black text-amber-400 bg-amber-500/10 px-1 sm:px-1.5 py-0.5 rounded-md">
               {gasProducts.length}
             </span>
           </div>
         </div>
 
-        {/* Category Cover Image Card 2: Accessories */}
+        {/* Category Cover Image Card 3: Accessories */}
         <div
           onClick={() => handleSelectCategory('accessories')}
-          className={`group relative overflow-hidden rounded-3xl border transition-all duration-300 cursor-pointer aspect-[4/3] bg-slate-950 p-4 flex flex-col justify-between items-center ${
+          className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl border transition-all duration-300 cursor-pointer aspect-[4/3] bg-slate-950 p-2 sm:p-4 flex flex-col justify-between items-center ${
             selectedCategory === 'accessories'
               ? 'border-sky-500 shadow-xl shadow-sky-500/10 ring-2 ring-sky-500/20'
               : 'border-slate-800 hover:border-sky-500/60'
           }`}
         >
           {/* Main Cover Image Only */}
-          <div className="w-full h-full flex items-center justify-center p-2">
+          <div className="w-full h-full flex items-center justify-center p-1 sm:p-2">
             <img
               src={accCoverImage}
               alt="Accessories Category"
@@ -85,12 +118,12 @@ export const CategoryCoverBanners = () => {
           </div>
 
           {/* Minimal Floating Label Pill */}
-          <div className="absolute bottom-2.5 inset-x-2.5 bg-slate-900/90 backdrop-blur-md border border-slate-800/90 py-1.5 px-3 rounded-2xl flex items-center justify-between group-hover:border-sky-500/50 transition-colors">
-            <span className="text-xs font-black text-white truncate flex items-center space-x-1">
-              <Wrench className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
-              <span>Accessories</span>
+          <div className="absolute bottom-1.5 sm:bottom-2.5 inset-x-1.5 sm:inset-x-2.5 bg-slate-900/90 backdrop-blur-md border border-slate-800/90 py-1 sm:py-1.5 px-2 sm:px-3 rounded-xl sm:rounded-2xl flex items-center justify-between group-hover:border-sky-500/50 transition-colors">
+            <span className="text-[10px] sm:text-xs font-black text-white truncate flex items-center space-x-1">
+              <Wrench className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-sky-400 flex-shrink-0" />
+              <span className="truncate">Accessories</span>
             </span>
-            <span className="text-[10px] font-black text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded-md">
+            <span className="text-[9px] sm:text-[10px] font-black text-sky-400 bg-sky-500/10 px-1 sm:px-1.5 py-0.5 rounded-md">
               {accProducts.length}
             </span>
           </div>
